@@ -187,6 +187,51 @@ docker ps -a  mission-ubuntu, Exited (137)
 
 ## 터미널 파일 및 디렉터리 조작
 
+### 파일 생성 → 이동 → 삭제 연속 실행 기록
+
+Ubuntu의 임시 실습 디렉터리에서 파일 생성부터 삭제 확인까지 한 번에 실행했다. `touch`로 빈 파일을 만들고 `printf`로 텍스트 파일을 만든 뒤 `ls -la`와 `cat`으로 확인했다. 복사본을 `mv`로 하위 폴더로 옮기면서 이름을 변경하고, `rm` 전후에 `ls`와 `cat`을 실행했다. 마지막 `cat`에서 삭제한 파일은 `No such file or directory` 오류가 나고 원본은 같은 내용을 출력했다. 이 실행의 stdout과 stderr를 아래에 순서대로 함께 기록했다. [원본 터미널 로그](evidence/31-cli-create-move-delete.txt)
+
+```console
+$ pwd
+/tmp/workstation-cli-check.WYVdsY
+$ mkdir moved
+$ touch .empty
+$ printf '%s\n' 'CLI practice' > original.txt
+$ ls -la
+total 4
+drwx------ 3 dev  dev  100 Nov 25 01:04 .
+drwxrwxrwt 7 root root 160 Nov 25 01:04 ..
+-rw-r--r-- 1 dev  dev    0 Nov 25 01:04 .empty
+drwxr-xr-x 2 dev  dev   40 Nov 25 01:04 moved
+-rw-r--r-- 1 dev  dev   13 Nov 25 01:04 original.txt
+$ cat original.txt
+CLI practice
+$ cp original.txt copy.txt
+$ mv copy.txt moved/renamed.txt
+$ ls -la
+total 4
+drwx------ 3 dev  dev  100 Nov 25 01:04 .
+drwxrwxrwt 7 root root 160 Nov 25 01:04 ..
+-rw-r--r-- 1 dev  dev    0 Nov 25 01:04 .empty
+drwxr-xr-x 2 dev  dev   60 Nov 25 01:04 moved
+-rw-r--r-- 1 dev  dev   13 Nov 25 01:04 original.txt
+$ ls -l moved
+total 4
+-rw-r--r-- 1 dev dev 13 Nov 25 01:04 renamed.txt
+$ cat moved/renamed.txt
+CLI practice
+$ rm moved/renamed.txt
+$ ls -la moved
+total 0
+drwxr-xr-x 2 dev dev  40 Nov 25 01:04 .
+drwx------ 3 dev dev 100 Nov 25 01:04 ..
+$ cat moved/renamed.txt
+cat: moved/renamed.txt: No such file or directory
+$ cat original.txt
+CLI practice
+```
+
+
 Ubuntu 홈 디렉터리 안에 실습 폴더를 만들고, 파일을 생성·확인·복사·이름 변경·삭제했다. [명령과 삭제 전 결과](evidence/11-cli-file-operations.png) · [삭제 후 결과](evidence/12-cli-after-removal.png)
 
 ```bash
