@@ -313,9 +313,31 @@ user.name=daguri
 user.email=[masked]
 ```
 
+## 첫 커밋 만들기
+
+제출용 README와 증거 파일을 과제 폴더로 복사하고, `git add`에서 제출할 파일을 직접 지정했다. `git commit -qm`으로 메시지를 지정해 조용한 모드로 커밋하고, `git log -1 --oneline`으로 가장 최근 커밋을 한 줄로 확인했다.
+
+```bash
+git add README.md Dockerfile site evidence
+git commit -qm "Add workstation mission and verification evidence"
+git log -1 --oneline
+```
+
+```text
+0f1e96f (HEAD -> main) Add workstation mission and verification evidence
+```
+
 ## VS Code에서 WSL 과제 폴더 열기
 
 VS Code의 `WSL: Connect to WSL`로 Ubuntu에 연결하고, `File: Open Folder`에서 `/home/dev/workstation-mission`을 열었다. 왼쪽 아래의 `WSL: Ubuntu`는 VS Code가 Ubuntu 환경에 연결된 상태임을 보여 준다. 탐색기에서 `Dockerfile`과 `site`가 보여 과제 폴더를 올바르게 열었음을 확인했다. [VS Code의 WSL 연결 화면](26-vscode-wsl-workspace.png)
+
+VS Code의 계정 메뉴를 열어 GitHub 계정으로 로그인되어 있는 것을 확인했다. [VS Code GitHub 로그인 확인](27-vscode-github-sign-in.png)
+
+처음에는 `Restricted Mode`로 인해 소스 제어를 사용할 수 없었다. VS Code의 작업 영역 신뢰 설정에서 직접 만든 `/home/dev/workstation-mission` 폴더를 신뢰한 뒤, 소스 제어 화면에서 `main`과 첫 커밋을 확인했다. [소스 제어 화면](28-vscode-source-control.png)
+
+## GitHub 원격 저장소 게시
+
+VS Code 명령 팔레트에서 `Publish to GitHub`를 실행해 `workstation-mission`을 공개 저장소로 만들고, 로컬 `main` 브랜치의 첫 커밋을 올렸다. VS Code에 게시 성공 알림이 표시됐고, GitHub 저장소의 `main`에서 `README.md`, `Dockerfile`, `site/index.html`, `evidence/README.md`를 확인했다. Git은 로컬에서 변경 이력을 기록하고, GitHub는 그 이력과 파일을 원격에서 공유할 수 있게 한다. [VS Code 게시 성공 화면](29-vscode-github-published.png) · [GitHub 저장소](https://github.com/daguri2963/workstation-mission)
 
 ## 트러블슈팅
 

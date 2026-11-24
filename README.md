@@ -37,6 +37,7 @@ curl -fsS http://127.0.0.1:8080
 - [x] [볼륨 영속성](evidence/README.md#docker-볼륨-영속성-확인)
 - [x] [Git 초기화](evidence/README.md#git-저장소-초기화)와 [작성자 설정](evidence/README.md#git-커밋-작성자-설정)
 - [x] [VS Code에서 WSL 과제 폴더 열기](evidence/README.md#vs-code에서-wsl-과제-폴더-열기)
-- [ ] VS Code에서 GitHub 로그인 및 원격 저장소 연동
+- [x] [VS Code에서 GitHub 로그인 확인](evidence/27-vscode-github-sign-in.png)
+- [x] [GitHub 원격 저장소 연동](evidence/README.md#github-원격-저장소-게시)
 
 [실습 기록](evidence/README.md)에 명령별 목적, 실제 출력과 캡처, [트러블슈팅](evidence/README.md#트러블슈팅)을 정리했다.
