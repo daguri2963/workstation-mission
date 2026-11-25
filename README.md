@@ -11,6 +11,8 @@ Windows의 WSL 2 Ubuntu에서 리눅스 CLI와 파일 권한을 실습했다. Do
 | Docker | Docker Desktop WSL 2 백엔드, Docker CLI 및 Linux 엔진 29.9.3 |
 | Git | Ubuntu Git 2.53.0 |
 
+![Ubuntu, Bash, Git 버전 확인 결과](evidence/23-ubuntu-bash-git-versions.png)
+
 ## 웹 서버 재현
 
 Docker 엔진이 실행 중인지 `docker info`로 확인한 뒤, 저장소의 최상위 폴더에서 아래 명령을 실행한다. `8080`을 다른 프로세스가 사용 중이면 호스트 포트 `8080`과 접속 주소의 포트를 비어 있는 번호로 함께 바꾼다.
@@ -54,7 +56,7 @@ ss -ltnp 'sport = :8080'
 - [x] [볼륨 영속성](#docker-볼륨-영속성-확인)
 - [x] [Git 초기화](#git-저장소-초기화)와 [작성자 설정](#git-커밋-작성자-설정)
 - [x] [VS Code에서 WSL 과제 폴더 열기](#vs-code에서-wsl-과제-폴더-열기)
-- [x] [VS Code에서 GitHub 로그인 확인](evidence/27-vscode-github-sign-in.png)
+- [x] [VS Code에서 GitHub 로그인 확인](#vs-code에서-wsl-과제-폴더-열기)
 - [x] [GitHub 원격 저장소 연동](#github-원격-저장소-게시)
 
 [실습 기록](evidence/README.md)에 명령별 목적, 실제 출력과 캡처, [트러블슈팅](#트러블슈팅)을 정리했다.
@@ -65,13 +67,19 @@ ss -ltnp 'sport = :8080'
 wsl --install -d Ubuntu
 ```
 
-Windows에서 리눅스 CLI를 사용하기 위해 WSL과 Ubuntu 배포판을 설치했다. 첫 실행에서는 WSL `3.0.5`와 가상 머신 플랫폼 기능이 설치됐고, 적용하려면 Windows를 다시 시작하라는 메시지가 나왔다. 재부팅 후 Ubuntu 배포판이 등록되지 않은 것을 확인해 같은 명령을 다시 실행했다. 두 번째 실행에서는 Ubuntu 설치가 완료되고 초기 계정 설정 화면이 열렸다. [첫 실행](evidence/01-wsl-install.png) · [Ubuntu 설치](evidence/03-ubuntu-install.png)
+Windows에서 리눅스 CLI를 사용하기 위해 WSL과 Ubuntu 배포판을 설치했다. 첫 실행에서는 WSL `3.0.5`와 가상 머신 플랫폼 기능이 설치됐고, 적용하려면 Windows를 다시 시작하라는 메시지가 나왔다. 재부팅 후 Ubuntu 배포판이 등록되지 않은 것을 확인해 같은 명령을 다시 실행했다. 두 번째 실행에서는 Ubuntu 설치가 완료되고 초기 계정 설정 화면이 열렸다.
+
+![첫 실행](evidence/01-wsl-install.png)
+
+![Ubuntu 설치](evidence/03-ubuntu-install.png)
 
 ```powershell
 wsl -l -v
 ```
 
-등록된 배포판과 각 배포판의 WSL 모드를 확인했다. `-l`은 배포판을 나열하고, `-v`는 상태와 버전 열을 함께 표시한다. Docker Desktop과 연동할 Ubuntu의 `VERSION`이 `2`인지 이 명령으로 확인했다. [Ubuntu 등록 전](evidence/02-wsl-no-distribution.png) · [Ubuntu 등록 후](evidence/05-ubuntu-wsl2-verified.png)
+등록된 배포판과 각 배포판의 WSL 모드를 확인했다. `-l`은 배포판을 나열하고, `-v`는 상태와 버전 열을 함께 표시한다. Docker Desktop과 연동할 Ubuntu의 `VERSION`이 `2`인지 이 명령으로 확인했다.
+
+![Ubuntu 등록 후](evidence/05-ubuntu-wsl2-verified.png)
 
 ```text
   NAME      STATE     VERSION
@@ -80,19 +88,23 @@ wsl -l -v
 
 ## Docker 설치와 동작 확인
 
-Docker Desktop은 현재 Windows 사용자용으로 설치하고 WSL 2를 선택했다. WSL Integration에서 기본 배포판 연동을 켜 Ubuntu 터미널에서 Docker 엔진을 사용할 수 있게 했다. [설치 설정](evidence/06-docker-desktop-install-options.png) · [WSL 연동 설정](evidence/07-docker-wsl-integration.png)
+Docker Desktop은 현재 Windows 사용자용으로 설치하고 WSL 2를 선택했다. WSL Integration에서 기본 배포판 연동을 켜 Ubuntu 터미널에서 Docker 엔진을 사용할 수 있게 했다.
+
+![설치 설정](evidence/06-docker-desktop-install-options.png)
+
+![WSL 연동 설정](evidence/07-docker-wsl-integration.png)
 
 ```powershell
 wsl -d Ubuntu
 ```
 
-PowerShell에서 Ubuntu의 Bash로 들어가 Docker 명령이 Ubuntu 환경에서 실행되는지 확인하기 위해 사용했다. [Ubuntu 진입과 Docker 버전 확인](evidence/08-docker-version-ubuntu.png)
+PowerShell에서 Ubuntu의 Bash로 들어가 Docker 명령이 Ubuntu 환경에서 실행되는지 확인하기 위해 사용했다.
 
 ```bash
 docker --version
 ```
 
-Ubuntu에서 Docker CLI가 실행되는지 확인하고 클라이언트 버전을 기록했다. 엔진 연결은 이어지는 `docker info`로 확인했다. [버전 확인 화면](evidence/08-docker-version-ubuntu.png)
+Ubuntu에서 Docker CLI가 실행되는지 확인하고 클라이언트 버전을 기록했다. 엔진 연결은 이어지는 `docker info`로 확인했다.
 
 ```text
 Docker version 29.9.3, build 5457199
@@ -102,7 +114,7 @@ Docker version 29.9.3, build 5457199
 docker info --format 'Server={{.ServerVersion}} OS={{.OSType}}'
 ```
 
-Docker CLI가 엔진에 연결되어 서버 정보를 읽을 수 있는지 확인했다. 기본 `docker info` 출력이 길어 `--format`으로 서버 버전과 엔진의 OS 유형만 한 줄로 표시했다. [엔진 확인 화면](evidence/09-docker-engine-info.png)
+Docker CLI가 엔진에 연결되어 서버 정보를 읽을 수 있는지 확인했다. 기본 `docker info` 출력이 길어 `--format`으로 서버 버전과 엔진의 OS 유형만 한 줄로 표시했다.
 
 ```text
 Server=29.9.3 OS=linux
@@ -114,13 +126,14 @@ ServerVersion=29.9.3 OSType=linux OperatingSystem=Docker Desktop
 ```
 
 ![Docker 버전 실제 출력](evidence/08-docker-version-ubuntu.png)
+
 ![docker info 엔진 상태 실제 출력](evidence/09-docker-engine-info.png)
 
 ```bash
 docker run --rm hello-world
 ```
 
-테스트 이미지로 컨테이너를 실제 실행해 출력이 터미널에 돌아오는지 확인했다. `--rm`은 테스트 컨테이너가 종료되면 자동으로 삭제한다. [컨테이너 실행 화면](evidence/10-docker-hello-world.png)
+테스트 이미지로 컨테이너를 실제 실행해 출력이 터미널에 돌아오는지 확인했다. `--rm`은 테스트 컨테이너가 종료되면 자동으로 삭제한다.
 
 ```text
 Hello from Docker!
@@ -137,7 +150,7 @@ docker run -dit --name mission-ubuntu ubuntu bash
 docker exec -it mission-ubuntu bash
 ```
 
-`docker pull`로 `ubuntu:latest` 이미지를 내려받고, `docker images`로 로컬 이미지 목록에서 `ubuntu:latest`와 `hello-world:latest`를 확인했다. `docker run`은 그 이미지에서 `mission-ubuntu` 컨테이너를 만들고 Bash를 주 프로세스로 실행했다. `-d`로 백그라운드에서 실행하고, `-i`로 표준 입력을 열어 두고, `-t`로 가상 터미널을 할당했다. `docker exec -it`로 실행 중인 컨테이너에 별도의 대화형 Bash 셸을 열었다. [이미지 다운로드와 컨테이너 실행 화면](evidence/14-docker-ubuntu-exec.png)
+`docker pull`로 `ubuntu:latest` 이미지를 내려받고, `docker images`로 로컬 이미지 목록에서 `ubuntu:latest`와 `hello-world:latest`를 확인했다. `docker run`은 그 이미지에서 `mission-ubuntu` 컨테이너를 만들고 Bash를 주 프로세스로 실행했다. `-d`로 백그라운드에서 실행하고, `-i`로 표준 입력을 열어 두고, `-t`로 가상 터미널을 할당했다. `docker exec -it`로 실행 중인 컨테이너에 별도의 대화형 Bash 셸을 열었다.
 
 컨테이너 안에서 `ls`로 루트 디렉터리의 내용을 확인했다. `echo`로 문자열을 출력해 명령이 내부에서 실행되는지 확인한 뒤 `exit`로 이 셸을 종료했다.
 
@@ -164,7 +177,7 @@ ubuntu:latest        d66b366dac61   163MB        45.9MB
 
 ![docker images 및 Ubuntu 내부 명령 출력](evidence/14-docker-ubuntu-exec.png)
 
-Ubuntu에서 `docker attach mission-ubuntu`를 실행해 컨테이너의 주 프로세스인 Bash에 연결했다. 앞서 사용한 `docker exec`는 새 Bash를 열었고, `attach`는 이미 실행 중인 Bash에 연결했다. 그 셸에서 `echo "Attached to the main shell"`을 실행했다. `Ctrl+P` 다음 `Ctrl+Q`를 눌러 컨테이너를 실행 상태로 둔 채 호스트 Ubuntu로 돌아왔다. [접속과 운영 명령 결과](evidence/15-docker-ubuntu-operations.png)
+Ubuntu에서 `docker attach mission-ubuntu`를 실행해 컨테이너의 주 프로세스인 Bash에 연결했다. 앞서 사용한 `docker exec`는 새 Bash를 열었고, `attach`는 이미 실행 중인 Bash에 연결했다. 그 셸에서 `echo "Attached to the main shell"`을 실행했다. `Ctrl+P` 다음 `Ctrl+Q`를 눌러 컨테이너를 실행 상태로 둔 채 호스트 Ubuntu로 돌아왔다.
 
 ```bash
 docker logs --tail 10 mission-ubuntu
@@ -232,7 +245,7 @@ CLI practice
 ```
 
 
-Ubuntu 홈 디렉터리 안에 실습 폴더를 만들고, 파일을 생성·확인·복사·이름 변경·삭제했다. [명령과 삭제 전 결과](evidence/11-cli-file-operations.png) · [삭제 후 결과](evidence/12-cli-after-removal.png)
+Ubuntu 홈 디렉터리 안에 실습 폴더를 만들고, 파일을 생성·확인·복사·이름 변경·삭제했다.
 
 ```bash
 cd ~
@@ -274,11 +287,12 @@ ls -la (삭제 후, 발췌)
 ```
 
 ![터미널 명령 실행과 삭제 전 목록](evidence/11-cli-file-operations.png)
+
 ![삭제 후 ls -la 실제 출력](evidence/12-cli-after-removal.png)
 
 ## 파일과 디렉터리 권한 변경
 
-`mkdir -p`로 권한을 비교할 디렉터리를 만들었다. `chmod`로 파일과 디렉터리를 각각 `600`, `700`으로 설정해 비교 기준을 만들고, 이후 `644`, `755`로 바꿨다. `ls -ld`에서 `-l`은 권한을 포함한 상세 정보를 표시하고, `-d`는 디렉터리의 내용 대신 디렉터리 자체를 표시한다. [권한 변경 전후 화면](evidence/13-cli-permissions.png)
+`mkdir -p`로 권한을 비교할 디렉터리를 만들었다. `chmod`로 파일과 디렉터리를 각각 `600`, `700`으로 설정해 비교 기준을 만들고, 이후 `644`, `755`로 바꿨다. `ls -ld`에서 `-l`은 권한을 포함한 상세 정보를 표시하고, `-d`는 디렉터리의 내용 대신 디렉터리 자체를 표시한다.
 
 ```bash
 mkdir -p sample-dir
@@ -332,8 +346,10 @@ docker build -t workstation-web:1.0 .
 ```
 
 - `mkdir -p site`로 웹 콘텐츠 폴더를 만들고, `printf`의 출력을 `site/index.html`에 저장했다. 브라우저에서 커스텀 페이지가 제공되는지 제목으로 확인할 수 있도록 했다.
-- `FROM nginx:alpine`으로 기존 NGINX 실행 환경을 사용했다. `COPY`는 직접 만든 정적 파일을 NGINX의 기본 문서 경로 `/usr/share/nginx/html/`에 넣는다. `>`로 Dockerfile의 첫 줄을 저장하고 `>>`로 두 번째 줄을 추가한 뒤, `cat`으로 두 줄을 확인했다. [Dockerfile 작성 화면](evidence/17-dockerfile-created.png)
-- `docker build`에서 `-t workstation-web:1.0`으로 이미지 이름과 태그를 지정했다. 마지막 `.`은 현재 폴더를 빌드 컨텍스트로 사용한다는 뜻이다. 빌드 로그에서 `COPY` 단계와 이미지 내보내기가 완료된 것을 확인했다. [이미지 빌드 성공 화면](evidence/18-docker-image-build.png)
+- `FROM nginx:alpine`으로 기존 NGINX 실행 환경을 사용했다. `COPY`는 직접 만든 정적 파일을 NGINX의 기본 문서 경로 `/usr/share/nginx/html/`에 넣는다. `>`로 Dockerfile의 첫 줄을 저장하고 `>>`로 두 번째 줄을 추가한 뒤, `cat`으로 두 줄을 확인했다.
+
+  ![Dockerfile 작성 화면](evidence/17-dockerfile-created.png)
+- `docker build`에서 `-t workstation-web:1.0`으로 이미지 이름과 태그를 지정했다. 마지막 `.`은 현재 폴더를 빌드 컨텍스트로 사용한다는 뜻이다. 빌드 로그에서 `COPY` 단계와 이미지 내보내기가 완료된 것을 확인했다.
 
 ```text
 [+] Building 7.5s (7/7) FINISHED
@@ -351,7 +367,7 @@ docker run -d --name web-8081 -p 127.0.0.1:8081:80 workstation-web:1.0
 docker ps
 ```
 
-같은 이미지로 컨테이너 두 개를 백그라운드에서 실행했다. `-p`는 호스트의 포트를 컨테이너 내부의 NGINX 포트 `80`에 연결한다. 두 컨테이너가 각각 격리되어 내부 포트 `80`을 사용할 수 있고, 호스트에서는 `8080`과 `8081`을 통해 각각 접근할 수 있다. `127.0.0.1`을 지정해 호스트의 로컬 주소에만 포트를 열었다. `docker ps`로 두 컨테이너가 `Up` 상태이고 포트가 예상대로 매핑됐는지 확인했다. [실행과 포트 매핑 화면](evidence/19-docker-port-mapping.png)
+같은 이미지로 컨테이너 두 개를 백그라운드에서 실행했다. `-p`는 호스트의 포트를 컨테이너 내부의 NGINX 포트 `80`에 연결한다. 두 컨테이너가 각각 격리되어 내부 포트 `80`을 사용할 수 있고, 호스트에서는 `8080`과 `8081`을 통해 각각 접근할 수 있다. `127.0.0.1`을 지정해 호스트의 로컬 주소에만 포트를 열었다. `docker ps`로 두 컨테이너가 `Up` 상태이고 포트가 예상대로 매핑됐는지 확인했다.
 
 ```text
 web-8080  Up 9 seconds  127.0.0.1:8080->80/tcp
@@ -360,9 +376,10 @@ web-8081  Up 3 seconds  127.0.0.1:8081->80/tcp
 
 Linux 컨테이너는 기본적으로 별도의 **네트워크 네임스페이스**에서 자기 인터페이스와 리스닝 포트를 사용한다. `-p 127.0.0.1:8080:80`은 호스트의 루프백 주소 `127.0.0.1`과 포트 `8080`에 들어온 연결을 해당 컨테이너의 네임스페이스 안에 있는 `80/tcp`로 전달한다.
 
-Windows 브라우저에서 `http://127.0.0.1:8080`과 `http://127.0.0.1:8081`을 각각 열었다. 두 주소 모두에서 `My Docker Workstation` 제목이 표시되어 이미지에 넣은 `index.html`이 제공되는 것을 확인했다. [두 주소와 응답을 함께 캡처한 화면](evidence/20-browser-port-verification.png)
+Windows 브라우저에서 `http://127.0.0.1:8080`과 `http://127.0.0.1:8081`을 각각 열었다. 두 주소 모두에서 `My Docker Workstation` 제목이 표시되어 이미지에 넣은 `index.html`이 제공되는 것을 확인했다.
 
 ![포트 매핑 명령과 docker ps 실제 출력](evidence/19-docker-port-mapping.png)
+
 ![주소창의 8080 및 8081 포트와 실제 브라우저 응답](evidence/20-browser-port-verification.png)
 
 ## 바인드 마운트 변경 반영
@@ -377,7 +394,7 @@ echo '<h1>Bind mount updated</h1>' > bind-site/index.html
 curl -fsS http://127.0.0.1:8082
 ```
 
-`mkdir`와 `cp`로 실습용 웹 콘텐츠를 마련했다. `--mount type=bind`는 현재 디렉터리(`$PWD`)의 `bind-site`를 컨테이너의 NGINX 문서 경로에 연결했다. `readonly`는 컨테이너에서 해당 경로에 쓰는 것을 막는다. Ubuntu 호스트에서는 `echo`와 `>`로 `index.html`을 수정할 수 있었다. 같은 URL에 `curl`을 두 번 실행해 수정 전후 응답을 비교했다. `-f`는 HTTP 오류 응답을 실패로 처리하고, `-sS`는 진행 표시를 숨기면서 오류 메시지는 보여 준다. [바인드 마운트 실행과 응답 비교](evidence/21-bind-mount-before-after.png)
+`mkdir`와 `cp`로 실습용 웹 콘텐츠를 마련했다. `--mount type=bind`는 현재 디렉터리(`$PWD`)의 `bind-site`를 컨테이너의 NGINX 문서 경로에 연결했다. `readonly`는 컨테이너에서 해당 경로에 쓰는 것을 막는다. Ubuntu 호스트에서는 `echo`와 `>`로 `index.html`을 수정할 수 있었다. 같은 URL에 `curl`을 두 번 실행해 수정 전후 응답을 비교했다. `-f`는 HTTP 오류 응답을 실패로 처리하고, `-sS`는 진행 표시를 숨기면서 오류 메시지는 보여 준다.
 
 ```text
 변경 전 <h1>My Docker Workstation</h1>
@@ -403,7 +420,7 @@ docker exec volume-second cat /data/message.txt
 
 - `docker volume create`로 Docker가 관리하는 이름 있는 볼륨 `mission-data`를 생성했다. `-v mission-data:/data`로 같은 볼륨을 두 컨테이너의 `/data` 경로에 연결했다. `sleep infinity`로 각 컨테이너를 검증 명령을 실행하는 동안 유지했다.
 - `docker exec ... sh -c`로 리디렉션을 컨테이너 내부 셸에서 처리해 `/data/message.txt`에 데이터를 썼다. `cat`으로 첫 번째 컨테이너에서 파일 내용을 확인했다.
-- `docker stop`으로 첫 컨테이너를 중지하고 `docker rm`으로 삭제했다. 새 컨테이너에 같은 볼륨을 연결한 뒤 파일에 다시 쓰는 과정 없이 `cat`으로 동일한 내용을 읽었다. 파일이 컨테이너의 수명과 별개로 유지됨을 확인했다. [컨테이너 삭제 전후 파일 읽기 화면](evidence/22-docker-volume-persistence.png)
+- `docker stop`으로 첫 컨테이너를 중지하고 `docker rm`으로 삭제했다. 새 컨테이너에 같은 볼륨을 연결한 뒤 파일에 다시 쓰는 과정 없이 `cat`으로 동일한 내용을 읽었다. 파일이 컨테이너의 수명과 별개로 유지됨을 확인했다.
 
 ```text
 volume-first에서 삭제 전  Volume data survived
@@ -439,7 +456,9 @@ git init
 git status --short --branch
 ```
 
-`git config --global init.defaultBranch main`으로 앞으로 초기화할 저장소의 기본 브랜치 이름을 설정했다. `git init`은 현재 과제 폴더에 로컬 저장소를 만들었다. `git status --short --branch`로 현재 브랜치와 추적 전 파일을 간단히 확인했다. `??`는 Git이 아직 추적하지 않는 파일 또는 폴더를 뜻한다. [저장소 초기화와 상태 화면](evidence/24-git-init-main.png)
+`git config --global init.defaultBranch main`으로 앞으로 초기화할 저장소의 기본 브랜치 이름을 설정했다. `git init`은 현재 과제 폴더에 로컬 저장소를 만들었다. `git status --short --branch`로 현재 브랜치와 추적 전 파일을 간단히 확인했다. `??`는 Git이 아직 추적하지 않는 파일 또는 폴더를 뜻한다.
+
+![저장소 초기화와 상태 화면](evidence/24-git-init-main.png)
 
 ```text
 ## No commits yet on main
@@ -451,7 +470,7 @@ git status --short --branch
 
 ## Git 커밋 작성자 설정
 
-`git config --local`로 과제 저장소의 작성자 이름과 이메일을 설정했다. 이 값은 Git이 새 커밋에 기록하는 작성자 정보다. `git config --list`에서 과제에 필요한 세 항목만 `grep -E`로 골랐고, `sed`로 이메일을 가려 검증 화면에 남겼다. [작성자 설정 확인](evidence/25-git-author-config.png)
+`git config --local`로 과제 저장소의 작성자 이름과 이메일을 설정했다. 이 값은 Git이 새 커밋에 기록하는 작성자 정보다. `git config --list`에서 과제에 필요한 세 항목만 `grep -E`로 골랐고, `sed`로 이메일을 가려 검증 화면에 남겼다.
 
 ```bash
 git config --list | grep -E '^(init\.defaultbranch|user\.name|user\.email)=' | sed 's/^user\.email=.*/user.email=[masked]/'
@@ -481,15 +500,19 @@ git log -1 --oneline
 
 ## VS Code에서 WSL 과제 폴더 열기
 
-VS Code의 `WSL: Connect to WSL`로 Ubuntu에 연결하고, `File: Open Folder`에서 `/home/dev/workstation-mission`을 열었다. 왼쪽 아래의 `WSL: Ubuntu`는 VS Code가 Ubuntu 환경에 연결된 상태임을 보여 준다. 탐색기에서 `Dockerfile`과 `site`가 보여 과제 폴더를 올바르게 열었음을 확인했다. [VS Code의 WSL 연결 화면](evidence/26-vscode-wsl-workspace.png)
+VS Code의 `WSL: Connect to WSL`로 Ubuntu에 연결하고, `File: Open Folder`에서 `/home/dev/workstation-mission`을 열었다. 왼쪽 아래의 `WSL: Ubuntu`는 VS Code가 Ubuntu 환경에 연결된 상태임을 보여 준다. 탐색기에서 `Dockerfile`과 `site`가 보여 과제 폴더를 올바르게 열었음을 확인했다.
 
-VS Code의 계정 메뉴를 열어 GitHub 계정으로 로그인되어 있는 것을 확인했다. [VS Code GitHub 로그인 확인](evidence/27-vscode-github-sign-in.png)
+![VS Code의 WSL 연결 화면](evidence/26-vscode-wsl-workspace.png)
 
-처음에는 `Restricted Mode`로 인해 소스 제어를 사용할 수 없었다. VS Code의 작업 영역 신뢰 설정에서 직접 만든 `/home/dev/workstation-mission` 폴더를 신뢰한 뒤, 소스 제어 화면에서 `main`과 첫 커밋을 확인했다. [소스 제어 화면](evidence/28-vscode-source-control.png)
+VS Code의 계정 메뉴를 열어 GitHub 계정으로 로그인되어 있는 것을 확인했다.
+
+처음에는 `Restricted Mode`로 인해 소스 제어를 사용할 수 없었다. VS Code의 작업 영역 신뢰 설정에서 직접 만든 `/home/dev/workstation-mission` 폴더를 신뢰한 뒤, 소스 제어 화면에서 `main`과 첫 커밋을 확인했다.
+
+![소스 제어 화면](evidence/28-vscode-source-control.png)
 
 ## GitHub 원격 저장소 게시
 
-VS Code 명령 팔레트에서 `Publish to GitHub`를 실행해 `workstation-mission`을 공개 저장소로 만들고, 로컬 `main` 브랜치의 첫 커밋을 올렸다. VS Code에 게시 성공 알림이 표시됐고, GitHub 저장소의 `main`에서 `README.md`, `Dockerfile`, `site/index.html`, `evidence/README.md`를 확인했다. Git은 로컬에서 변경 이력을 기록하고, GitHub는 그 이력과 파일을 원격에서 공유할 수 있게 한다. [VS Code 게시 성공 화면](evidence/29-vscode-github-published.png) · [GitHub 저장소](https://github.com/daguri2963/workstation-mission)
+VS Code 명령 팔레트에서 `Publish to GitHub`를 실행해 `workstation-mission`을 공개 저장소로 만들고, 로컬 `main` 브랜치의 첫 커밋을 올렸다. VS Code에 게시 성공 알림이 표시됐고, GitHub 저장소의 `main`에서 `README.md`, `Dockerfile`, `site/index.html`, `evidence/README.md`를 확인했다. Git은 로컬에서 변경 이력을 기록하고, GitHub는 그 이력과 파일을 원격에서 공유할 수 있게 한다. [GitHub 저장소](https://github.com/daguri2963/workstation-mission)
 
 `git remote -v`로 `origin`의 가져오기와 푸시 주소가 모두 과제의 GitHub 저장소인지 확인했다.
 
@@ -500,11 +523,14 @@ origin  https://github.com/daguri2963/workstation-mission.git (push)
 ```
 
 ![VS Code에 GitHub 계정이 연결된 상태](evidence/27-vscode-github-sign-in.png)
+
 ![VS Code의 GitHub 게시 성공 알림](evidence/29-vscode-github-published.png)
 
 ## VS Code 통합 터미널에서 푸시 확인
 
-WSL에 연결된 VS Code에서 통합 터미널을 열었다. `git status --short --branch`로 로컬 `main`이 `origin/main`을 추적하는지 확인했고, `git push`로 원격에 보낼 커밋이 있는지 확인했다. `Everything up-to-date`는 로컬 `main`과 원격 브랜치의 커밋이 이미 일치한다는 뜻이다. `??`로 표시된 두 실습 폴더는 Git에서 추적하지 않는 파일이다. [VS Code 터미널의 푸시 결과](evidence/30-vscode-terminal-git-push.png)
+WSL에 연결된 VS Code에서 통합 터미널을 열었다. `git status --short --branch`로 로컬 `main`이 `origin/main`을 추적하는지 확인했고, `git push`로 원격에 보낼 커밋이 있는지 확인했다. `Everything up-to-date`는 로컬 `main`과 원격 브랜치의 커밋이 이미 일치한다는 뜻이다. `??`로 표시된 두 실습 폴더는 Git에서 추적하지 않는 파일이다.
+
+![VS Code 터미널의 푸시 결과](evidence/30-vscode-terminal-git-push.png)
 
 ```bash
 git status --short --branch
@@ -525,7 +551,7 @@ Everything up-to-date
 - **문제** `wsl -l -v`에서 설치된 배포판이 없다고 나왔다.
 - **원인 가설** 첫 설치는 WSL과 가상 머신 플랫폼을 설정했고, Ubuntu 배포판 설치는 남아 있었다.
 - **확인** 최초 설치 화면에는 재부팅 안내가 나왔고, 재부팅 후 배포판 목록은 비어 있었다.
-- **해결** `wsl --install -d Ubuntu`를 다시 실행해 배포판을 설치했다. `wsl -l -v`에서 Ubuntu의 `VERSION`이 `2`로 표시됐다. [최초 설치](evidence/01-wsl-install.png) · [배포판 목록 확인](evidence/02-wsl-no-distribution.png) · [해결 후](evidence/05-ubuntu-wsl2-verified.png)
+- **해결** `wsl --install -d Ubuntu`를 다시 실행해 배포판을 설치했다. `wsl -l -v`에서 Ubuntu의 `VERSION`이 `2`로 표시됐다.
 
 ![재부팅 뒤 Ubuntu 배포판이 아직 없던 상태](evidence/02-wsl-no-distribution.png)
 
@@ -534,14 +560,16 @@ Everything up-to-date
 - **문제** 초기 계정 설정 중 비밀번호 변경이 실패했다.
 - **원인 가설** 첫 비밀번호와 확인 입력이 달랐다.
 - **확인** 터미널에 `Sorry, passwords do not match.`가 표시됐다.
-- **해결** 재시도에서 같은 비밀번호를 두 번 입력했고 `passwd: password updated successfully`를 확인했다. [재입력 결과 화면](evidence/04-ubuntu-password-retry.png)
+- **해결** 재시도에서 같은 비밀번호를 두 번 입력했고 `passwd: password updated successfully`를 확인했다.
+
+  ![재입력 결과 화면](evidence/04-ubuntu-password-retry.png)
 
 ### Dockerfile 생성 명령이 줄 중간에서 실행됨
 
 - **문제** `docker build -t workstation-web:1.0 .`가 `open Dockerfile: no such file or directory`를 출력했다.
 - **원인 가설** 파일 생성 명령에서 `>` 뒤에 대상 파일 이름을 입력하기 전에 Enter를 눌러 리디렉션이 완성되지 않았다.
-- **확인** Bash에서 `syntax error near unexpected token 'newline'`이 나왔고, 다음 줄의 `Dockerfile`은 별도 명령으로 처리됐다. `cat Dockerfile`로 파일이 없는 것을 확인했다. [생성 오류 및 빌드 실패](evidence/16-dockerfile-build-failed.png)
-- **해결** `echo` 명령 두 개로 나누고, 각 명령에서 `>` 또는 `>>`와 대상 파일을 같은 줄에 입력했다. `cat Dockerfile`로 두 줄을 확인한 뒤 다시 빌드해 `workstation-web:1.0` 이미지를 만들었다. [Dockerfile 생성 확인](evidence/17-dockerfile-created.png) · [재빌드 결과](evidence/18-docker-image-build.png)
+- **확인** Bash에서 `syntax error near unexpected token 'newline'`이 나왔고, 다음 줄의 `Dockerfile`은 별도 명령으로 처리됐다. `cat Dockerfile`로 파일이 없는 것을 확인했다.
+- **해결** `echo` 명령 두 개로 나누고, 각 명령에서 `>` 또는 `>>`와 대상 파일을 같은 줄에 입력했다. `cat Dockerfile`로 두 줄을 확인한 뒤 다시 빌드해 `workstation-web:1.0` 이미지를 만들었다.
 
 ```text
 -bash: syntax error near unexpected token `newline'
